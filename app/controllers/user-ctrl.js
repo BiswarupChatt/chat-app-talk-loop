@@ -48,3 +48,23 @@ userCtrl.login = async (req, res) => {
         res.status(500).json({ errors: 'Something went wrong.' })
     }
 }
+
+userCtrl.allUser = async (req, res) => {
+    try {
+        const { search = '' } = req.query
+
+        const searchQuery = {
+            $or: [
+                { name: { $regex: search, $options: "i" } },
+                { email: { $regex: search, $options: "i" } }
+            ]
+        }
+
+        const users = await User.find(searchQuery).find({ _id: { $ne: req.user.id } })
+
+        res.status(200).send(users)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ errors: 'Something went wrong.' })
+    }
+}
