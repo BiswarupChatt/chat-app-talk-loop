@@ -50,3 +50,32 @@ export const userRegisterValidations = {
         trim: true
     },
 }
+
+export const userLoginValidations = {
+    email: {
+        in: ['body'],
+        exists: {
+            errorMessage: "Email is required"
+        },
+        notEmpty: {
+            errorMessage: "Email cannot be empty"
+        },
+        isEmail: {
+            errorMessage: "Email Should be In valid format"
+        }
+    },
+    password: {
+        in: ['body'],
+        exists: {
+            errorMessage: "Password is required"
+        },
+        notEmpty: {
+            errorMessage: "Password cannot be empty"
+        },
+        isLength: {
+            options: { min: 8, max: 128 },
+            errorMessage: 'Password should be between 8-128 character'
+        },
+        trim: true
+    },
+}

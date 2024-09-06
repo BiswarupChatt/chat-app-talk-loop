@@ -8,7 +8,7 @@ import cors from 'cors'
 
 import { userCtrl } from './app/controllers/user-ctrl.js';
 
-import { userRegisterValidations } from './app/validations/user-validations.js';
+import { userRegisterValidations, userLoginValidations } from './app/validations/user-validations.js';
 
 import { configureDB } from './config/db.js';
 
@@ -26,6 +26,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/api/user/register', checkSchema(userRegisterValidations), userCtrl.register)
+app.post('/api/user/login', checkSchema(userLoginValidations), userCtrl.login)
 
 
 
