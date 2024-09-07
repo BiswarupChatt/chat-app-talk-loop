@@ -1,6 +1,6 @@
 export const chatCtrl = {}
-import { populate } from "dotenv"
-import Chat from "../models/chatModel"
+import { Chat } from "../models/chatModel.js"
+import { User } from "../models/userModel.js"
 
 chatCtrl.accessChat = async (req, res) => {
     const { userId } = req.body
@@ -12,13 +12,14 @@ chatCtrl.accessChat = async (req, res) => {
     let isChat = await Chat.find({
         isGroupChat: false,
         $and: [
-            { users: { $element: { $eq: req.user.id } } },
-            { users: { $element: { $eq: userId } } }
+            { users: { $elemMatch: { $eq: req.user.id } } },
+            { users: { $elemMatch: { $eq: userId } } }
         ]
     }).populate("users", "-password").populate("latestMessage")
 
     isChat = await User.populate(isChat, {
-        path: 'latestMessage.sender'
+        path: 'latestMessage.sender',
+        select: 'name pic email'
     })
 
     if (isChat.length > 0) {
@@ -27,7 +28,7 @@ chatCtrl.accessChat = async (req, res) => {
         let chatData = {
             chatName: "Sender",
             isGroupChat: false,
-            users: [res.user.id, userId]
+            users: [req.user.id, userId]
         }
         try {
             const createdChat = await Chat.create(chatData)
@@ -36,7 +37,12 @@ chatCtrl.accessChat = async (req, res) => {
 
             res.status(200).send(fullChat)
         } catch (err) {
-
+            console.log(err)
+            res.status(500).json({ errors: 'Something went wrong.', err })
         }
     }
+}
+
+chatCtrl.fetchChat = async (req, res) => {
+    
 }
