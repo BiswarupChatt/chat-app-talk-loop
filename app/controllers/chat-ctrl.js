@@ -91,3 +91,19 @@ chatCtrl.createGroupChat = async (req, res) => {
         res.status(500).json({ errors: 'Something went wrong.', err })
     }
 }
+
+chatCtrl.renameGroupChat = async (req, res) => {
+    try {
+        const { chatId, chatName } = req.body
+        const updatedChat = await Chat.findByIdAndUpdate(
+            chatId, { chatName }, { new: true }
+        ).populate("users", "-password").populate("groupAdmin", "-password")
+        if (!updatedChat) {
+            return res.status(400).json("Error While Updating Group Name")
+        }
+        res.status(200).json(updatedChat)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ errors: 'Something went wrong.', err })
+    }
+}
