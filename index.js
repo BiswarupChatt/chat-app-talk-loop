@@ -34,6 +34,7 @@ app.post('/api/user/login', checkSchema(userLoginValidations), userCtrl.login)
 
 app.post('/api/chat', authenticateUser, chatCtrl.accessChat)
 app.get('/api/chat', authenticateUser, chatCtrl.fetchChat)
+app.post('/api/chat/group', authenticateUser, chatCtrl.createGroupChat)
 
 
 app.listen(PORT, console.log(`Server is running on port ${PORT}`))
